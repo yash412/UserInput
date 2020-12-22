@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.justjava.R;
 
 import java.text.NumberFormat;
@@ -25,8 +27,7 @@ import java.text.NumberFormat;
  */
 public class MainActivity extends AppCompatActivity {
 
-    int quantity = 0;
-    int pricePerCup = 5;
+    int quantity = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +51,33 @@ public class MainActivity extends AppCompatActivity {
         CheckBox chocolateCheckBox = (CheckBox) findViewById(R.id.chocolate_checkbox);
         boolean hasChocolate = chocolateCheckBox.isChecked();
 
-        int price = calculatePrice();
+        int price = calculatePrice(hasWhippedCream, hasChocolate);
         displayMessage(createOrderSummary(name, price, hasWhippedCream, hasChocolate));
     }
 
     /**
      * Calculates the price of the order.
+     *
+     * @param addWhippedCream is whether or not the user wants whipped cream topping
+     * @param addChocolate is whether or not the user wants chocolate topping
      * @return total price.
      */
-    private int calculatePrice() {
-        return quantity * pricePerCup;
+    private int calculatePrice(boolean addWhippedCream, boolean addChocolate) {
+        // Price of 1 cup of coffee
+        int basePrice = 5;
+
+        // Add $1 if the user wants whipped cream
+        if(addWhippedCream) {
+            basePrice = basePrice + 1;
+        }
+
+        // Add $2 if the user wants chocolate
+        if(addChocolate) {
+            basePrice = basePrice + 2;
+        }
+
+        // Calculate the total order price by multiplying by quantity
+        return quantity * basePrice;
     }
 
     /**
@@ -85,6 +103,12 @@ public class MainActivity extends AppCompatActivity {
      * This method is called when the plus button is clicked.
      */
     public void increment (View view) {
+        if(quantity == 100) {
+            // Show an error message as a toast
+            Toast.makeText(this, "You cannot have more than 100 coffee", Toast.LENGTH_SHORT).show();
+            // Exit this method early because there's nothing left to do
+            return;
+        }
         quantity = quantity + 1;
         displayQuntity(quantity);
     }
@@ -93,6 +117,12 @@ public class MainActivity extends AppCompatActivity {
      * This method is called when the minus button is clicked.
      */
     public void decrement (View view) {
+        if(quantity == 1) {
+            // Show an error message as a toast
+            Toast.makeText(this, "You cannot have less than 1 coffee", Toast.LENGTH_SHORT).show();
+            // Exit this method early because there's nothing left to do
+            return;
+        }
         quantity = quantity - 1;
         displayQuntity(quantity);
     }
