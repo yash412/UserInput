@@ -29,7 +29,7 @@ import java.text.NumberFormat;
  */
 public class MainActivity extends AppCompatActivity {
 
-    int quantity = 1;
+    int quantity = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
      * This method is called when the order button is clicked.
      */
     public void submitOrder(View view) {
-
+        // Takes the name of customer
         EditText text = (EditText)findViewById(R.id.name_field);
         String name = text.getText().toString(); // Chaining method call
 
@@ -56,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
         int price = calculatePrice(hasWhippedCream, hasChocolate);
         String priceMessage = createOrderSummary(name, price, hasWhippedCream, hasChocolate);
 
+        /**
+         *  This following code is for sending intent to e-mail app.
+         */
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:")); // only email apps should handle this
         intent.putExtra(Intent.EXTRA_SUBJECT, "Just Java order for " + name);
@@ -101,12 +104,12 @@ public class MainActivity extends AppCompatActivity {
      * @return text summary
      */
     private String createOrderSummary(String name, int price, boolean addWhippedCream, boolean addChocolate) {
-        String priceMessage = "Name: " + name;
-        priceMessage += "\nAddWhippedcream: " + addWhippedCream;
-        priceMessage += "\nAddChocolate: " + addChocolate;
-        priceMessage += "\nQuantity: " + quantity;
-        priceMessage += "\nTotal: $";
-        priceMessage += price + "\nThankyou!";
+        String priceMessage = getString(R.string.order_summary_name,name);
+        priceMessage += "\n"+ getString(R.string.order_summary_whipped_cream,addWhippedCream);
+        priceMessage += "\n"+ getString(R.string.order_summary_chocolate,addChocolate);
+        priceMessage += "\n"+ getString(R.string.order_summary_quantity,quantity);
+        priceMessage += "\n"+ getString(R.string.order_summary_price,"Total: $"+ price);
+        priceMessage += "\n" + getString(R.string.thank_you) ;
         return priceMessage;
     }
 
